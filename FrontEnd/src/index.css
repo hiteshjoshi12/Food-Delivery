@@ -1,8 +1,9 @@
-@import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+@import "tailwindcss";
 *{
   box-sizing: border-box;
   font-family: outfit;
+  
 }
 body{
   min-height: 100vh;
@@ -10,4 +11,17 @@ body{
 a{
   text-decoration: none;
   color: inherit;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+::-webkit-scrollbar {
+  display: none;
 }
