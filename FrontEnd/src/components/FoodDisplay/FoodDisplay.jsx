@@ -11,7 +11,7 @@ const FoodDisplay = ({ category }) => {
         {food_list &&
           food_list.map((item, index) => (
             <FoodItem
-              key={item._id || index} // Use _id for unique keys
+              key={item._id || index} 
               id={item._id}
               name={item.name}
               description={item.description}
