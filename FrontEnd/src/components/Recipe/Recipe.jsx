@@ -82,11 +82,11 @@ const Recipe = () => {
 
       {/* Recipe Modal  */}
       {showModal && recipe && (
-        <div className="fixed inset-0 bg-white bg-opacity-60 flex justify-center items-center">
+        <div className="fixed inset-0 bg-black/80 flex justify-center items-center [animation:fadeIn_1s_ease-in-out]">
           <div className="bg-white p-6 rounded-lg w-[90%] md:w-[60%] lg:w-[40%] shadow-lg relative max-h-[80vh] overflow-y-auto">
             {/* Close Button */}
             <button
-              className="absolute top-3 right-3 bg-red-500 text-white px-3 py-1 rounded-full cursor-pointer"
+              className="absolute top-3 right-3 bg-red-500 text-white px-3 py-1 rounded-full cursor-pointer "
               onClick={() => setShowModal(false)}
             >
               ✕
