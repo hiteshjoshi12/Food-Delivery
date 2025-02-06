@@ -6,13 +6,13 @@ import { StoreContext } from "../../context/StoreContex";
 
 /* eslint-disable react/prop-types */
 const FoodItem = ({ id, name, price, description, image }) => {
-  const { cartItems, addToCart, removeFromCart } = useContext(StoreContext);
+  const { cartItems, addToCart, removeFromCart,url } = useContext(StoreContext);
   return (
     <div className="m-auto w-full rounded-[15px] shadow-2xl transition-[0.3s] [animation:fadeIn_1s_ease-in-out]">
       <div className="relative">
         <img
           className="w-full rounded-tl-2xl rounded-tr-2xl"
-          src={image}
+          src={url+"/images/"+image}
           alt=""
         />
         {!cartItems[id] ? (

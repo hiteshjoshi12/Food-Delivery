@@ -1,14 +1,14 @@
 import { useState, useEffect, useContext } from "react";
 import { assets } from "../../assets/frontend_assets/assets";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaArrowUp } from "react-icons/fa";
 import { StoreContext } from "../../context/StoreContex";
 
 const Navbar = ({ setShowLogin }) => {
   const [menu, setMenu] = useState("Home");
   const [showScroll, setShowScroll] = useState(false);
-  const {getTotalCartAmount} = useContext(StoreContext);
-
+  const { getTotalCartAmount, token, setToken } = useContext(StoreContext);
+  const navigate = useNavigate();
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 100) {
@@ -24,6 +24,12 @@ const Navbar = ({ setShowLogin }) => {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+  
+  const logout = ()=>{
+    localStorage.removeItem("token");
+    setToken("");
+    navigate("/");
+  }
 
   return (
     <div className="py-5 flex justify-between items-center relative">
@@ -83,14 +89,37 @@ const Navbar = ({ setShowLogin }) => {
           <Link to="/cart">
             <img src={assets.basket_icon} alt="Basket" />
           </Link>
-          <div className=  {getTotalCartAmount() === 0?"":"absolute w-2.5 h-2.5 bg-amber-600 rounded-xl top-[-8px] right-[-8px]"}></div>
+          <div
+            className={
+              getTotalCartAmount() === 0
+                ? ""
+                : "absolute w-2.5 h-2.5 bg-amber-600 rounded-xl top-[-8px] right-[-8px]"
+            }
+          ></div>
         </div>
-        <button
-          onClick={() => setShowLogin(true)}
-          className="bg-transparent text-[16px] text-[#49557e] border border-tomato py-2.5 px-[30px] cursor-pointer rounded-3xl transition duration-300 hover:bg-[#fff4f2]"
-        >
-          Sign In
-        </button>
+        {!token ? (
+          <button
+            onClick={() => setShowLogin(true)}
+            className="bg-transparent text-[16px] text-[#49557e] border border-tomato py-2.5 px-[30px] cursor-pointer rounded-3xl transition duration-300 hover:bg-[#fff4f2]"
+          >
+            Sign In
+          </button>
+        ) : (
+          <div className="relative cursor-pointer group">
+            <img src={assets.profile_icon} alt="" />
+            <ul className="absolute right-0 z-10 hidden flex-col gap-2 bg-[#fff2ef] p-3 w-36 rounded border outline outline-white list-none group-hover:flex">
+              <li className="flex items-center gap-2 cursor-pointer hover:text-tomato">
+                <img src={assets.bag_icon} alt="" className="w-5" />
+                <p className="hover:text-amber-600">Orders</p>
+              </li>
+              <hr />
+              <li className="flex items-center gap-2 cursor-pointer hover:text-tomato">
+                <img src={assets.logout_icon} alt="" className="w-5" />
+                <p onClick={logout} className="hover:text-amber-600">Logout</p>
+              </li>
+            </ul>
+          </div>
+        )}
       </div>
 
       {showScroll && (
