@@ -1,6 +1,7 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { StoreContext } from "../../context/StoreContex";
 import { toast } from "react-toastify";
+import {useNavigate} from 'react-router-dom'
 import axios from "axios";
 
 const PlaceOrder = () => {
@@ -104,15 +105,6 @@ const PlaceOrder = () => {
       if (!orderResponse.data.success) {
         throw new Error(orderResponse.data.message || "Order creation failed!");
       }
-
-      const orderId = orderResponse.data.orderId;
-
-      // Step 2: Create Razorpay Order
-      // const paymentInitResponse = await axios.post(
-      //   `${url}/api/order/placeOrder`,
-      //   { orderId }
-      // );
-
       const paymentInitResponse = await axios.post(
         `${url}/api/order/placeOrder`,
         { userId, items: formattedCartItems, amount: getTotalCartAmount(), address: data },
@@ -187,6 +179,15 @@ const PlaceOrder = () => {
     }
   };
 
+  const navigate = useNavigate();
+  useEffect(()=>{
+    if(!token){
+      navigate("/cart")
+    }
+    else if(getTotalCartAmount() === 0){
+      navigate("/cart")
+    }
+  },[token])
   return (
     <form className="flex justify-between items-start gap-12 mt-24 flex-wrap">
       <div className="w-full max-w-[min(30%,500px)]">
