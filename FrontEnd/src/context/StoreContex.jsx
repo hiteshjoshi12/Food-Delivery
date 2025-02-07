@@ -94,6 +94,7 @@ const StoreContextProvider = (props) => {
     token,
     setToken,
     userId,  
+    setUserId
   };
   
   return (

@@ -14,7 +14,9 @@ const placeOrder = async (req, res) => {
     console.log("🔹 Incoming Order Request:", req.body);
 
     if (!req.body.items || req.body.items.length === 0) {
-      return res.status(400).json({ success: false, message: "Cart is empty!" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Cart is empty!" });
     }
 
     // Generate a new Razorpay Order
@@ -37,10 +39,11 @@ const placeOrder = async (req, res) => {
     });
   } catch (error) {
     console.error("❌ Error in placeOrder:", error);
-    res.status(500).json({ success: false, message: "Order placement failed." });
+    res
+      .status(500)
+      .json({ success: false, message: "Order placement failed." });
   }
 };
-
 
 // Generate Razorpay Order
 const createRazorpayOrder = async (req, res) => {
@@ -51,14 +54,16 @@ const createRazorpayOrder = async (req, res) => {
     const order = await orderModel.findById(orderId);
 
     if (!order) {
-      return res.status(404).json({ success: false, message: "Order not found." });
+      return res
+        .status(404)
+        .json({ success: false, message: "Order not found." });
     }
 
     const options = {
       amount: order.amount * 100, // Convert to paise
       currency: "INR",
       receipt: order._id.toString(),
-      payment_capture: 1
+      payment_capture: 1,
     };
 
     const razorpayOrder = await razorpay.orders.create(options);
@@ -71,11 +76,13 @@ const createRazorpayOrder = async (req, res) => {
       orderId: razorpayOrder.id,
       amount: order.amount,
       currency: "INR",
-      key_id: process.env.RAZORPAY_KEY_ID
+      key_id: process.env.RAZORPAY_KEY_ID,
     });
   } catch (error) {
     console.error("❌ Error creating Razorpay order:", error);
-    res.status(500).json({ success: false, message: "Payment initialization failed." });
+    res
+      .status(500)
+      .json({ success: false, message: "Payment initialization failed." });
   }
 };
 
@@ -84,11 +91,28 @@ const verifyOrder = async (req, res) => {
   try {
     console.log("🔹 Verifying Payment:", req.body);
 
-    const { orderId, payment_id, razorpay_signature, userId, items, amount, address } = req.body;
+    const {
+      orderId,
+      payment_id,
+      razorpay_signature,
+      userId,
+      items,
+      amount,
+      address,
+    } = req.body;
 
-    if (!orderId || !payment_id || !razorpay_signature || !userId || !amount || !address) {
+    if (
+      !orderId ||
+      !payment_id ||
+      !razorpay_signature ||
+      !userId ||
+      !amount ||
+      !address
+    ) {
       console.log("❌ Missing required fields in verifyOrder:", req.body);
-      return res.status(400).json({ success: false, message: "Invalid payment data." });
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid payment data." });
     }
 
     // Compute HMAC signature
@@ -99,7 +123,9 @@ const verifyOrder = async (req, res) => {
 
     if (expectedSignature !== razorpay_signature) {
       console.log("❌ Signature Mismatch!");
-      return res.status(400).json({ success: false, message: "Invalid Razorpay signature." });
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid Razorpay signature." });
     }
 
     // ✅ Save order in the database only after successful payment
@@ -118,21 +144,31 @@ const verifyOrder = async (req, res) => {
     res.json({ success: true, message: "Payment verified. Order saved." });
   } catch (error) {
     console.error("❌ Error in verifyOrder:", error);
-    res.status(500).json({ success: false, message: "Payment verification failed." });
+    res
+      .status(500)
+      .json({ success: false, message: "Payment verification failed." });
   }
 };
-
-
-
 
 // Fetch User Orders
 const userOrders = async (req, res) => {
   try {
-    const orders = await orderModel.find({ userId: req.body.userId });
+    const userId = req.userId || req.body.userId; // Extract from middleware or request body
+    console.log(userId);
+    if (!userId) {
+      return res
+        .status(400)
+        .json({ success: false, message: "User ID is required." });
+    }
+
+    const orders = await orderModel.find({ userId });
+
     res.json({ success: true, data: orders });
   } catch (error) {
     console.error("❌ Error fetching user orders:", error);
-    res.status(500).json({ success: false, message: "Error fetching user orders." });
+    res
+      .status(500)
+      .json({ success: false, message: "Error fetching user orders." });
   }
 };
 
@@ -160,4 +196,11 @@ const updateStatus = async (req, res) => {
   }
 };
 
-export { placeOrder, createRazorpayOrder, verifyOrder, userOrders, listOrders, updateStatus };
+export {
+  placeOrder,
+  createRazorpayOrder,
+  verifyOrder,
+  userOrders,
+  listOrders,
+  updateStatus,
+};

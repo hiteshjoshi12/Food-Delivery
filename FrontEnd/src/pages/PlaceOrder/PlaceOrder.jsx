@@ -189,120 +189,64 @@ const PlaceOrder = () => {
     }
   },[token])
   return (
-    <form className="flex justify-between items-start gap-12 mt-24 flex-wrap">
-      <div className="w-full max-w-[min(30%,500px)]">
-        <p className="text-2xl font-semibold mb-12">Delivery Information</p>
-        <div className="flex gap-3">
-          <input
-            name="firstName"
-            onChange={onChangeHandler}
-            value={data.firstName}
-            type="text"
-            placeholder="First Name"
-            className="w-full p-2 border border-gray-300 rounded-md"
-          />
-          <input
-            name="lastName"
-            onChange={onChangeHandler}
-            value={data.lastName}
-            type="text"
-            placeholder="Last Name"
-            className="w-full p-2 border border-gray-300 rounded-md"
-          />
+    <form className="flex flex-col lg:flex-row justify-between items-start gap-10 mt-16 px-4 md:px-10">
+      
+      {/* Delivery Information */}
+      <div className="w-full lg:w-1/2 bg-gray-100 p-6 rounded-lg">
+        <h2 className="text-xl font-semibold mb-6 text-center lg:text-left">Delivery Information</h2>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <input name="firstName" onChange={onChangeHandler} value={data.firstName} type="text" placeholder="First Name" className="w-full p-2 border border-gray-300 rounded-md" />
+          <input name="lastName" onChange={onChangeHandler} value={data.lastName} type="text" placeholder="Last Name" className="w-full p-2 border border-gray-300 rounded-md" />
         </div>
-        <input
-          name="email"
-          onChange={onChangeHandler}
-          value={data.email}
-          type="email"
-          placeholder="Email Address"
-          className="w-full p-2 border border-gray-300 rounded-md mt-3"
-        />
-        <input
-          name="street"
-          onChange={onChangeHandler}
-          value={data.street}
-          type="text"
-          placeholder="Street"
-          className="w-full p-2 border border-gray-300 rounded-md mt-3"
-        />
-        <div className="flex gap-3 mt-3">
-          <input
-            name="city"
-            onChange={onChangeHandler}
-            value={data.city}
-            type="text"
-            placeholder="City"
-            className="w-full p-2 border border-gray-300 rounded-md"
-          />
-          <input
-            name="state"
-            onChange={onChangeHandler}
-            value={data.state}
-            type="text"
-            placeholder="State"
-            className="w-full p-2 border border-gray-300 rounded-md"
-          />
+
+        <input name="email" onChange={onChangeHandler} value={data.email} type="email" placeholder="Email Address" className="w-full p-2 border border-gray-300 rounded-md mt-4" />
+        <input name="street" onChange={onChangeHandler} value={data.street} type="text" placeholder="Street" className="w-full p-2 border border-gray-300 rounded-md mt-4" />
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+          <input name="city" onChange={onChangeHandler} value={data.city} type="text" placeholder="City" className="w-full p-2 border border-gray-300 rounded-md" />
+          <input name="state" onChange={onChangeHandler} value={data.state} type="text" placeholder="State" className="w-full p-2 border border-gray-300 rounded-md" />
         </div>
-        <div className="flex gap-3 mt-3">
-          <input
-            name="zipcode"
-            onChange={onChangeHandler}
-            value={data.zipcode}
-            type="text"
-            placeholder="Zip code"
-            className="w-full p-2 border border-gray-300 rounded-md"
-          />
-          <input
-            name="country"
-            onChange={onChangeHandler}
-            value={data.country}
-            type="text"
-            placeholder="Country"
-            className="w-full p-2 border border-gray-300 rounded-md"
-          />
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+          <input name="zipcode" onChange={onChangeHandler} value={data.zipcode} type="text" placeholder="Zip code" className="w-full p-2 border border-gray-300 rounded-md" />
+          <input name="country" onChange={onChangeHandler} value={data.country} type="text" placeholder="Country" className="w-full p-2 border border-gray-300 rounded-md" />
         </div>
-        <input
-          name="phone"
-          onChange={onChangeHandler}
-          value={data.phone}
-          type="text"
-          placeholder="Phone"
-          className="w-full p-2 border border-gray-300 rounded-md mt-3"
-        />
+
+        <input name="phone" onChange={onChangeHandler} value={data.phone} type="text" placeholder="Phone" className="w-full p-2 border border-gray-300 rounded-md mt-4" />
       </div>
 
-      <div className="w-full max-w-[min(40%,500px)]">
-        <div className="flex flex-col gap-5">
-          <h2 className="text-lg font-semibold">Cart Totals</h2>
-          <div>
-            <div className="flex justify-between text-gray-600">
-              <p>SubTotal</p>
-              <p>{getTotalCartAmount()}</p>
-            </div>
-            <hr className="my-2" />
-            <div className="flex justify-between text-gray-600">
-              <p>Delivery Fee</p>
-              <p>{getTotalCartAmount() === 0 ? 0 : 2}</p>
-            </div>
-            <hr className="my-2" />
-            <div className="flex justify-between text-gray-800 font-bold">
-              <p>Total</p>
-              <b>
-                {getTotalCartAmount() === 0 ? "" : getTotalCartAmount() + 2}
-              </b>
-            </div>
+      {/* Cart Totals & Payment */}
+      <div className="w-full lg:w-1/3 bg-gray-100 p-6 rounded-lg">
+        <h2 className="text-xl font-semibold mb-6 text-center lg:text-left">Cart Totals</h2>
+        
+        <div className="text-gray-600">
+          <div className="flex justify-between">
+            <p>Subtotal</p>
+            <p>₹{getTotalCartAmount()}</p>
           </div>
-          <button
-            type="button"
-            className="bg-[#eb6915] text-white w-56 py-3 rounded-md cursor-pointer mt-6"
-            onClick={handlePayment}
-            disabled={loading}
-          >
-            {loading ? "Processing..." : "PROCEED TO PAYMENT"}
-          </button>
+          <hr className="my-2" />
+          <div className="flex justify-between">
+            <p>Delivery Fee</p>
+            <p>{getTotalCartAmount() === 0 ? "₹0" : "₹2"}</p>
+          </div>
+          <hr className="my-2" />
+          <div className="flex justify-between text-gray-800 font-bold">
+            <p>Total</p>
+            <b>{getTotalCartAmount() === 0 ? "₹0" : `₹${getTotalCartAmount() + 2}`}</b>
+          </div>
         </div>
+
+        <button 
+          type="button" 
+          className="bg-[#eb6915] text-white w-full py-3 rounded-md cursor-pointer mt-6 hover:bg-orange-600 transition" 
+          onClick={handlePayment} 
+          disabled={loading}
+        >
+          {loading ? "Processing..." : "PROCEED TO PAYMENT"}
+        </button>
       </div>
+
     </form>
   );
 };

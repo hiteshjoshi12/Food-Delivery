@@ -4,7 +4,7 @@ import axios from "axios";
 import { StoreContext } from "../../context/StoreContex";
 
 const LoginPopup = ({ setShowLogin }) => {
-  const { url, setToken } = useContext(StoreContext);
+  const { url, setToken, setUserId } = useContext(StoreContext);
   const [currentState, setCurrentState] = useState("Signup");
   const [data, setData] = useState({
     name: "",
@@ -28,6 +28,7 @@ const LoginPopup = ({ setShowLogin }) => {
         localStorage.setItem("userId", response.data.userId);  // ✅ Store userId
   
         setToken(response.data.token);
+        setUserId(localStorage.setItem("userId", response.data.userId));
         setShowLogin(false);
         window.location.reload();  // ✅ Reload to update StoreContext
       } else {
@@ -41,8 +42,12 @@ const LoginPopup = ({ setShowLogin }) => {
   
 
   return (
-    <div className="fixed inset-0 z-10 bg-black/50 flex items-center justify-center">
-      <form onSubmit={onLogin} className="bg-white w-[min(27vw,330px)] p-6 rounded-lg shadow-lg flex flex-col gap-6 animate-fadeIn">
+    <div className="fixed inset-0 z-50  flex items-center justify-center px-4 sm:px-0">
+      <form
+        onSubmit={onLogin}
+        className="bg-white w-full max-w-[400px] sm:max-w-[350px] md:max-w-[330px] p-6 rounded-lg shadow-lg flex flex-col gap-5 animate-fadeIn"
+      >
+        {/* Header */}
         <div className="flex justify-between items-center text-black">
           <h2 className="text-lg font-semibold">{currentState}</h2>
           <img
@@ -52,8 +57,10 @@ const LoginPopup = ({ setShowLogin }) => {
             className="w-4 cursor-pointer"
           />
         </div>
-        <div className="flex flex-col gap-5">
-        {currentState !== 'Login' && (
+
+        {/* Input Fields */}
+        <div className="flex flex-col gap-4">
+          {currentState !== "Login" && (
             <input
               name="name"
               onChange={onChangeHandler}
@@ -61,6 +68,7 @@ const LoginPopup = ({ setShowLogin }) => {
               type="text"
               placeholder="Your name"
               required
+              className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
           )}
           <input
@@ -70,6 +78,7 @@ const LoginPopup = ({ setShowLogin }) => {
             type="email"
             placeholder="Your email"
             required
+            className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
           />
           <input
             name="password"
@@ -78,33 +87,43 @@ const LoginPopup = ({ setShowLogin }) => {
             type="password"
             placeholder="Password"
             required
+            className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
           />
         </div>
-        <button type="submit" className="w-full bg-[#EB6915] text-white py-2 rounded text-base font-medium">
+
+        {/* Submit Button */}
+        <button
+          type="submit"
+          className="w-full bg-[#EB6915] text-white py-2 rounded text-base font-medium transition hover:bg-orange-600"
+        >
           {currentState === "Signup" ? "Create account" : "Login"}
         </button>
-        <div className="flex items-start gap-2 text-sm -mt-3">
+
+        {/* Terms Checkbox */}
+        <div className="flex items-start gap-2 text-sm">
           <input type="checkbox" required className="mt-1" />
           <p>
             By continuing, I agree to the{" "}
-            <span className="font-medium cursor-pointer">
+            <span className="font-medium cursor-pointer text-orange-600">
               terms of use & privacy policy
             </span>
             .
           </p>
         </div>
+
+        {/* Toggle Login/Signup */}
         {currentState === "Login" ? (
-          <p className="text-sm">
+          <p className="text-sm text-center">
             Create a new account?{" "}
             <span
-              onClick={() => setCurrentState("Sign Up")}
+              onClick={() => setCurrentState("Signup")}
               className="text-[#EB6915] font-medium cursor-pointer"
             >
               Click here
             </span>
           </p>
         ) : (
-          <p className="text-sm">
+          <p className="text-sm text-center">
             Already have an account?{" "}
             <span
               onClick={() => setCurrentState("Login")}
