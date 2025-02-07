@@ -40,11 +40,14 @@ const List = ({url}) => {
     fetchList();
   }, []);
 
+ 
   return (
-    <div className="flex flex-col w-[70%] ml-[max(5vw,25px)] mt-[50px] text-gray-500 text-[16px]">
-      <p className="text-lg font-semibold">All Foods List</p>
-      <div className="border border-gray-300 rounded-md">
-        <div className="grid grid-cols-[0.5fr_2fr_1fr_1fr_0.5fr] items-center gap-2 p-3 text-sm border-b bg-gray-100 font-semibold hidden md:grid">
+    <div className="w-full max-w-[800px] mx-auto mt-8 text-gray-700 px-4">
+      <p className="text-lg font-semibold mb-4">All Foods List</p>
+      
+      <div className="border border-gray-300 rounded-lg overflow-hidden">
+        {/* Table Headers - Visible on Large Screens */}
+        <div className="hidden md:grid grid-cols-5 items-center gap-2 p-3 text-sm border-b bg-gray-100 font-semibold">
           <p>Image</p>
           <p>Name</p>
           <p>Category</p>
@@ -52,24 +55,30 @@ const List = ({url}) => {
           <p>Action</p>
         </div>
 
+        {/* Food List Items */}
         {list.map((item, index) => (
           <div
             key={index}
-            className="grid grid-cols-[0.5fr_2fr_1fr_1fr_0.5fr] items-center gap-2 p-3 text-sm border-b md:grid"
+            className="grid grid-cols-2 md:grid-cols-5 items-center gap-2 p-3 text-sm border-b"
           >
-            <img
-              src={`${url}/images/${item.image}`}
-              alt={item.name}
-              className="w-[50px]"
-            />
-            <p>{item.name}</p>
-            <p>{item.category}</p>
-            <p>${item.price}</p>
+            {/* Image */}
+            <img src={`${url}/images/${item.image}`} alt={item.name} className="w-14 mx-auto md:w-12" />
+
+            {/* Name */}
+            <p className="text-center md:text-left">{item.name}</p>
+
+            {/* Category */}
+            <p className="hidden md:block">{item.category}</p>
+
+            {/* Price */}
+            <p className="font-medium text-center md:text-left">₹{item.price}</p>
+
+            {/* Remove Button */}
             <p
               onClick={() => removeFood(item._id)}
-              className="cursor-pointer text-red-500 font-bold"
+              className="cursor-pointer text-red-500 font-bold text-center md:text-left"
             >
-              x
+              ✕
             </p>
           </div>
         ))}

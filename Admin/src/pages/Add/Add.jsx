@@ -12,7 +12,7 @@ const Add = ({url}) => {
     category: "Salad",
   });
 
-  const onChnageHandler = (event) => {
+  const onChangeHandler = (event) => {
     const { name, value } = event.target;
     setData((data) => ({ ...data, [name]: value }));
   };
@@ -42,17 +42,18 @@ const Add = ({url}) => {
         toast.error(response.data.message)
     }
   };
-
   return (
-    <div className="w-[70%] ml-[max(5vw,25px)] mt-[50px] text-gray-500 text-[16px]">
-      <form onSubmit={onSubmitHandler} className="flex flex-col gap-5">
-        <div className="flex flex-col items-start">
-          <p>Upload Image</p>
+    <div className="w-full max-w-[600px] mx-auto mt-10 text-gray-700 px-4">
+      <form onSubmit={onSubmitHandler} className="flex flex-col gap-6">
+        
+        {/* Image Upload */}
+        <div className="flex flex-col items-center">
+          <p className="text-lg font-medium">Upload Image</p>
           <label htmlFor="image" className="cursor-pointer">
             <img
               src={image ? URL.createObjectURL(image) : assets.upload_area}
-              alt=""
-              className="w-[120px]"
+              alt="Upload"
+              className="w-[120px] rounded-md shadow-md"
             />
           </label>
           <input
@@ -64,38 +65,43 @@ const Add = ({url}) => {
           />
         </div>
 
-        <div className="w-[max(40%,280px)] flex flex-col">
-          <p>Product Name</p>
+        {/* Product Name */}
+        <div className="flex flex-col">
+          <p className="text-sm font-medium">Product Name</p>
           <input
-            onChange={onChnageHandler}
+            onChange={onChangeHandler}
             value={data.name}
             type="text"
             name="name"
             placeholder="Type here"
-            className="p-2 border border-gray-300 rounded-md"
+            className="p-2 border border-gray-300 rounded-md focus:ring focus:ring-orange-400"
           />
         </div>
 
-        <div className="w-[max(40%,280px)] flex flex-col">
-          <p>Product Description</p>
+        {/* Product Description */}
+        <div className="flex flex-col">
+          <p className="text-sm font-medium">Product Description</p>
           <textarea
-            onChange={onChnageHandler}
+            onChange={onChangeHandler}
             value={data.description}
             name="description"
-            rows={6}
+            rows={4}
             placeholder="Write Content Here"
             required
-            className="p-2 border border-gray-300 rounded-md"
+            className="p-2 border border-gray-300 rounded-md focus:ring focus:ring-orange-400"
           ></textarea>
         </div>
 
-        <div className="flex gap-8">
+        {/* Category & Price */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          
+          {/* Product Category */}
           <div className="flex flex-col">
-            <p>Product Category</p>
+            <p className="text-sm font-medium">Product Category</p>
             <select
-              onChange={onChnageHandler}
+              onChange={onChangeHandler}
               name="category"
-              className="max-w-[120px] p-2 border border-gray-300 rounded-md"
+              className="p-2 border border-gray-300 rounded-md focus:ring focus:ring-orange-400"
             >
               <option value="Salad">Salad</option>
               <option value="Rolls">Rolls</option>
@@ -108,22 +114,24 @@ const Add = ({url}) => {
             </select>
           </div>
 
+          {/* Product Price */}
           <div className="flex flex-col">
-            <p>Product Price</p>
+            <p className="text-sm font-medium">Product Price</p>
             <input
-              onChange={onChnageHandler}
+              onChange={onChangeHandler}
               value={data.price}
               type="number"
               name="price"
               placeholder="₹20"
-              className="max-w-[120px] p-2 border border-gray-300 rounded-md"
+              className="p-2 border border-gray-300 rounded-md focus:ring focus:ring-orange-400"
             />
           </div>
         </div>
 
+        {/* Submit Button */}
         <button
           type="submit"
-          className="max-w-[120px] border-none p-2 bg-black text-white cursor-pointer rounded-md"
+          className="w-full bg-orange-500 text-white p-3 rounded-md cursor-pointer hover:bg-orange-600 transition"
         >
           ADD
         </button>
