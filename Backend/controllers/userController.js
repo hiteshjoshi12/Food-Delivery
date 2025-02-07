@@ -11,21 +11,7 @@ const createToken = (id, role) => {
 // Login User
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
-
   try {
-    // ✅ Check for hardcoded admin credentials
-    if (email === "admin@gmail.com" && password === "admin123") {
-      const token = createToken("admin", "admin");
-
-      return res.json({
-        success: true,
-        token,
-        userId: "admin",
-        role: "admin",
-      });
-    }
-
-    // ✅ Check for normal user
     const user = await userModel.findOne({ email });
 
     if (!user) {
@@ -36,16 +22,16 @@ const loginUser = async (req, res) => {
     if (!isMatch) {
       return res.json({ success: false, message: "Invalid credentials" });
     }
+    if(email == "admin@gmail.com" && password == "admin123"){
+      const token = createToken(user._id);
+      const role = "admin";
+      res.json({ success: true, token, role, userId: user._id }); 
 
-    // ✅ Generate token for normal user
-    const token = createToken(user._id, "user");
+    }else{
+      const token = createToken(user._id);
+      res.json({ success: true, token, userId: user._id });  
+    }
 
-    res.json({
-      success: true,
-      token,
-      userId: user._id,
-      role: "user", // ✅ Send "user" role
-    });
   } catch (error) {
     console.log(error);
     res.json({ success: false, message: "Error" });
