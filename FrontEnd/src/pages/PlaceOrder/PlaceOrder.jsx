@@ -1,11 +1,12 @@
 import { useContext, useEffect, useState } from "react";
 import { StoreContext } from "../../context/StoreContex";
 import { toast } from "react-toastify";
-import {useNavigate} from 'react-router-dom'
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const PlaceOrder = () => {
-  const { getTotalCartAmount, cartItems, userId, url, token,food_list } =useContext(StoreContext);
+  const { getTotalCartAmount, cartItems, userId, url, token, food_list,costAfterPromo } =
+    useContext(StoreContext);
   const [loading, setLoading] = useState(false);
   console.log("🔹 User ID Before Order:", userId);
   const [data, setData] = useState({
@@ -40,6 +41,18 @@ const PlaceOrder = () => {
 
   const handlePayment = async () => {
     console.log("🔹 User ID Before Order:", userId);
+
+    if (
+      data.firstName == "" &&
+      data.lastName == "" &&
+      data.email == "" &&
+      data.phone == "" &&
+      data.city == "" &&
+      data.country == ""
+    ) {
+      toast.error("Delivery Information");
+      return;
+    }
 
     if (!userId) {
       toast.error("User not logged in. Please login to place an order.");
@@ -86,7 +99,7 @@ const PlaceOrder = () => {
       const requestData = {
         userId,
         items: formattedCartItems,
-        amount: getTotalCartAmount(),
+        amount: costAfterPromo,
         address: data,
       };
 
@@ -107,10 +120,14 @@ const PlaceOrder = () => {
       }
       const paymentInitResponse = await axios.post(
         `${url}/api/order/placeOrder`,
-        { userId, items: formattedCartItems, amount: getTotalCartAmount(), address: data },
+        {
+          userId,
+          items: formattedCartItems,
+          amount: getTotalCartAmount(),
+          address: data,
+        },
         { headers: { Authorization: `Bearer ${token}` } } // ✅ Ensure token is passed
       );
-      
 
       if (!paymentInitResponse.data.success) {
         throw new Error(paymentInitResponse.data.message);
@@ -128,46 +145,45 @@ const PlaceOrder = () => {
         description: "Order Payment",
         order_id: razorpayOrderId,
         handler: async function (paymentResponse) {
-            try {
-                console.log("🔹 Sending Verify Order Request:", {
-                    orderId: razorpayOrderId,
-                    payment_id: paymentResponse.razorpay_payment_id,
-                    razorpay_signature: paymentResponse.razorpay_signature,
-                    userId, // ✅ Include userId
-                    items: formattedCartItems, // ✅ Include items
-                    amount: getTotalCartAmount(), // ✅ Include amount
-                    address: data // ✅ Include address
-                });
-    
-                const verifyRes = await axios.post(`${url}/api/order/verifyOrder`, {
-                    orderId: razorpayOrderId,
-                    payment_id: paymentResponse.razorpay_payment_id,
-                    razorpay_signature: paymentResponse.razorpay_signature,
-                    userId, // ✅ Ensure this is sent
-                    items: formattedCartItems, // ✅ Include items array
-                    amount: getTotalCartAmount(), // ✅ Include total amount
-                    address: data // ✅ Include address details
-                });
-    
-                if (verifyRes.data.success) {
-                    toast.success("Payment successful! Your order is confirmed.");
-                    window.location.href = "/myorders";
-                } else {
-                    toast.error("Payment verification failed!");
-                }
-            } catch (error) {
-                console.error("❌ Payment Verification Error:", error);
-                toast.error("Payment verification failed!");
+          try {
+            console.log("🔹 Sending Verify Order Request:", {
+              orderId: razorpayOrderId,
+              payment_id: paymentResponse.razorpay_payment_id,
+              razorpay_signature: paymentResponse.razorpay_signature,
+              userId, // ✅ Include userId
+              items: formattedCartItems, // ✅ Include items
+              amount: getTotalCartAmount(), // ✅ Include amount
+              address: data, // ✅ Include address
+            });
+
+            const verifyRes = await axios.post(`${url}/api/order/verifyOrder`, {
+              orderId: razorpayOrderId,
+              payment_id: paymentResponse.razorpay_payment_id,
+              razorpay_signature: paymentResponse.razorpay_signature,
+              userId, // ✅ Ensure this is sent
+              items: formattedCartItems, // ✅ Include items array
+              amount: getTotalCartAmount(), // ✅ Include total amount
+              address: data, // ✅ Include address details
+            });
+
+            if (verifyRes.data.success) {
+              toast.success("Payment successful! Your order is confirmed.");
+              window.location.href = "/myorders";
+            } else {
+              toast.error("Payment verification failed!");
             }
+          } catch (error) {
+            console.error("❌ Payment Verification Error:", error);
+            toast.error("Payment verification failed!");
+          }
         },
         prefill: {
-            name: `${data.firstName} ${data.lastName}`,
-            email: data.email,
-            contact: data.phone,
+          name: `${data.firstName} ${data.lastName}`,
+          email: data.email,
+          contact: data.phone,
         },
         theme: { color: "#eb6915" },
-    };
-    
+      };
 
       const razorpay = new window.Razorpay(options);
       razorpay.open();
@@ -180,73 +196,150 @@ const PlaceOrder = () => {
   };
 
   const navigate = useNavigate();
-  useEffect(()=>{
-    if(!token){
-      navigate("/cart")
+  useEffect(() => {
+    if (!token) {
+      navigate("/cart");
+    } else if (getTotalCartAmount() === 0) {
+      navigate("/cart");
     }
-    else if(getTotalCartAmount() === 0){
-      navigate("/cart")
-    }
-  },[token])
+  }, [token]);
   return (
     <form className="flex flex-col lg:flex-row justify-between items-start gap-10 mt-16 px-4 md:px-10">
-      
       {/* Delivery Information */}
       <div className="w-full lg:w-1/2 bg-gray-100 p-6 rounded-lg">
-        <h2 className="text-xl font-semibold mb-6 text-center lg:text-left">Delivery Information</h2>
+        <h2 className="text-xl font-semibold mb-6 text-center lg:text-left">
+          Delivery Information
+        </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <input name="firstName" onChange={onChangeHandler} value={data.firstName} type="text" placeholder="First Name" className="w-full p-2 border border-gray-300 rounded-md" />
-          <input name="lastName" onChange={onChangeHandler} value={data.lastName} type="text" placeholder="Last Name" className="w-full p-2 border border-gray-300 rounded-md" />
+          <input
+            name="firstName"
+            onChange={onChangeHandler}
+            value={data.firstName}
+            type="text"
+            placeholder="First Name"
+            className="w-full p-2 border border-gray-300 rounded-md"
+          />
+          <input
+            name="lastName"
+            onChange={onChangeHandler}
+            value={data.lastName}
+            type="text"
+            placeholder="Last Name"
+            className="w-full p-2 border border-gray-300 rounded-md"
+          />
         </div>
 
-        <input name="email" onChange={onChangeHandler} value={data.email} type="email" placeholder="Email Address" className="w-full p-2 border border-gray-300 rounded-md mt-4" />
-        <input name="street" onChange={onChangeHandler} value={data.street} type="text" placeholder="Street" className="w-full p-2 border border-gray-300 rounded-md mt-4" />
+        <input
+          name="email"
+          onChange={onChangeHandler}
+          value={data.email}
+          type="email"
+          placeholder="Email Address"
+          className="w-full p-2 border border-gray-300 rounded-md mt-4"
+        />
+        <input
+          name="street"
+          onChange={onChangeHandler}
+          value={data.street}
+          type="text"
+          placeholder="Street"
+          className="w-full p-2 border border-gray-300 rounded-md mt-4"
+        />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-          <input name="city" onChange={onChangeHandler} value={data.city} type="text" placeholder="City" className="w-full p-2 border border-gray-300 rounded-md" />
-          <input name="state" onChange={onChangeHandler} value={data.state} type="text" placeholder="State" className="w-full p-2 border border-gray-300 rounded-md" />
+          <input
+            name="city"
+            onChange={onChangeHandler}
+            value={data.city}
+            type="text"
+            placeholder="City"
+            className="w-full p-2 border border-gray-300 rounded-md"
+          />
+          <input
+            name="state"
+            onChange={onChangeHandler}
+            value={data.state}
+            type="text"
+            placeholder="State"
+            className="w-full p-2 border border-gray-300 rounded-md"
+          />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-          <input name="zipcode" onChange={onChangeHandler} value={data.zipcode} type="text" placeholder="Zip code" className="w-full p-2 border border-gray-300 rounded-md" />
-          <input name="country" onChange={onChangeHandler} value={data.country} type="text" placeholder="Country" className="w-full p-2 border border-gray-300 rounded-md" />
+          <input
+            name="zipcode"
+            onChange={onChangeHandler}
+            value={data.zipcode}
+            type="text"
+            placeholder="Zip code"
+            className="w-full p-2 border border-gray-300 rounded-md"
+          />
+          <input
+            name="country"
+            onChange={onChangeHandler}
+            value={data.country}
+            type="text"
+            placeholder="Country"
+            className="w-full p-2 border border-gray-300 rounded-md"
+          />
         </div>
 
-        <input name="phone" onChange={onChangeHandler} value={data.phone} type="text" placeholder="Phone" className="w-full p-2 border border-gray-300 rounded-md mt-4" />
+        <input
+          name="phone"
+          onChange={onChangeHandler}
+          value={data.phone}
+          type="text"
+          placeholder="Phone"
+          className="w-full p-2 border border-gray-300 rounded-md mt-4"
+        />
       </div>
 
       {/* Cart Totals & Payment */}
       <div className="w-full lg:w-1/3 bg-gray-100 p-6 rounded-lg">
-        <h2 className="text-xl font-semibold mb-6 text-center lg:text-left">Cart Totals</h2>
-        
+        <h2 className="text-xl font-semibold mb-6 text-center lg:text-left">
+          Cart Totals
+        </h2>
+
         <div className="text-gray-600">
           <div className="flex justify-between">
             <p>Subtotal</p>
-            <p>₹{getTotalCartAmount()}</p>
+            <p>₹{costAfterPromo}</p>
           </div>
           <hr className="my-2" />
           <div className="flex justify-between">
             <p>Delivery Fee</p>
-            <p>{getTotalCartAmount() === 0 ? "₹0" : "₹2"}</p>
+            <p>{getTotalCartAmount() > 500 ? "₹0" : "₹149"}</p>
           </div>
           <hr className="my-2" />
+          {costAfterPromo !== null && (
+              <>
+                <div className="flex justify-between text-green-600 font-bold">
+                  <p>Promo Discount</p>
+                  <p>-₹75</p>
+                </div>
+                <hr className="my-2" />
+              </>
+            )}
           <div className="flex justify-between text-gray-800 font-bold">
             <p>Total</p>
-            <b>{getTotalCartAmount() === 0 ? "₹0" : `₹${getTotalCartAmount() + 2}`}</b>
+            <b>
+              {getTotalCartAmount() === 0
+                ? "₹0"
+                : `₹${getTotalCartAmount() + 2}`}
+            </b>
           </div>
         </div>
 
-        <button 
-          type="button" 
-          className="bg-[#eb6915] text-white w-full py-3 rounded-md cursor-pointer mt-6 hover:bg-orange-600 transition" 
-          onClick={handlePayment} 
+        <button
+          type="button"
+          className="bg-[#eb6915] text-white w-full py-3 rounded-md cursor-pointer mt-6 hover:bg-orange-600 transition"
+          onClick={handlePayment}
           disabled={loading}
         >
           {loading ? "Processing..." : "PROCEED TO PAYMENT"}
         </button>
       </div>
-
     </form>
   );
 };

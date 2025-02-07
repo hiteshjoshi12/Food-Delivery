@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import { assets } from "../../assets/frontend_assets/assets";
 import axios from "axios";
 import { StoreContext } from "../../context/StoreContex";
+import { toast } from "react-toastify";
 
 const LoginPopup = ({ setShowLogin }) => {
   const { url, setToken, setUserId } = useContext(StoreContext);
@@ -32,11 +33,11 @@ const LoginPopup = ({ setShowLogin }) => {
         setShowLogin(false);
         window.location.reload();  // ✅ Reload to update StoreContext
       } else {
-        alert(response.data.message);
+        toast.error(response.data.message);
       }
     } catch (error) {
       console.error("An error occurred during login:", error);
-      alert("An error occurred. Please try again later.");
+      toast.error("An error occurred. Please try again later.");
     }
   };
   

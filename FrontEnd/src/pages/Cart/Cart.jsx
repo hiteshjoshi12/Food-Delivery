@@ -1,14 +1,29 @@
-import { useContext } from "react";
+import { useContext, useRef, useState } from "react";
 import { StoreContext } from "../../context/StoreContex";
 import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
-  const { cartItems, food_list, removeFromCart,getTotalCartAmount,url } = useContext(StoreContext);
+  const { cartItems, food_list, removeFromCart, getTotalCartAmount, url,setCostAfterPromo ,costAfterPromo } = useContext(StoreContext);
   const navigate = useNavigate();
+  const promocode = useRef();
+
+
+  const handleApplyPromo = () => {
+    const promoValue = promocode.current.value.trim();
+    console.log("Entered Promo Code:", promoValue);
+    
+    if (promoValue === "GOODDAY75") {
+      const discountedAmount = Math.max(getTotalCartAmount()+149 - 75, 0); // Ensure total is not negative
+      setCostAfterPromo(discountedAmount);
+    } else {
+      setCostAfterPromo(null); // Reset if invalid
+    }
+  };
+
   return (
     <div className="mt-24 px-4 md:px-8">
       <div className="w-full">
-        {/* Table Headers - Visible on All Screens */}
+        {/* Table Headers */}
         <div className="grid grid-cols-6 items-center text-gray-500 text-xs md:text-sm border-b pb-2">
           <p>Item</p>
           <p>Title</p>
@@ -65,12 +80,25 @@ const Cart = () => {
             <hr className="my-2" />
             <div className="flex justify-between text-gray-600">
               <p>Delivery Fee</p>
-              <p>{getTotalCartAmount() === 0 ? "₹0" : "₹2"}</p>
+              <p>{getTotalCartAmount() > 500 ? "₹0" : "₹149"}</p>
             </div>
             <hr className="my-2" />
+
+            {/* Promo Discount Row (Only Show if Applied) */}
+            {costAfterPromo !== null && (
+              <>
+                <div className="flex justify-between text-green-600 font-bold">
+                  <p>Promo Discount</p>
+                  <p>-₹75</p>
+                </div>
+                <hr className="my-2" />
+              </>
+            )}
+
+            {/* Final Total Calculation */}
             <div className="flex justify-between text-gray-800 font-bold">
               <p>Total</p>
-              <b>{getTotalCartAmount() === 0 ? "₹0" : `₹${getTotalCartAmount() + 2}`}</b>
+              <b>₹{costAfterPromo !== null ? costAfterPromo : getTotalCartAmount() + 149}</b>
             </div>
           </div>
           <button 
@@ -81,19 +109,20 @@ const Cart = () => {
           </button>
         </div>
 
-        {/* Promo Code */}
+        {/* Promo Code Section */}
         <div className="flex-1 bg-gray-100 p-5 rounded-lg">
           <p className="text-gray-600">If you have a promo code, enter it here:</p>
           <div className="mt-3 flex flex-col sm:flex-row gap-2">
-            <input
+            <input ref={promocode}
               type="text"
               placeholder="Promo Code"
               className="bg-white border border-gray-300 rounded-md px-3 py-2 flex-grow focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
-            <button className="w-full sm:w-36 bg-black text-white py-3 rounded-md hover:bg-gray-800 transition">
+            <button onClick={handleApplyPromo} className="w-full sm:w-36 bg-black text-white py-3 rounded-md hover:bg-gray-800 transition">
               Submit
             </button>
           </div>
+          <p className="text-gray-600 mt-3">APPLY GOODDAY75 for 75 OFF.</p>
         </div>
 
       </div>
