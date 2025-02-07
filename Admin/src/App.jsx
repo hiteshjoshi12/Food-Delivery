@@ -12,14 +12,27 @@ const App = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const role = localStorage.getItem("role");
+    // ✅ Ensure localStorage has the latest values
+    const storedToken = localStorage.getItem("token");
+    const storedRole = localStorage.getItem("role")?.toLowerCase(); // ✅ Convert to lowercase for safety
 
-    // ✅ Redirect if user is not logged in or not an admin
-    if (!token || role !== "admin") {
-      window.location.href = "https://food-delivery-frontend-ed5x.onrender.com";
+    console.log("🔹 Token:", storedToken);
+    console.log("🔹 Role:", storedRole);
+
+    if (!storedToken) {
+        console.warn("❌ No token found, staying on frontend.");
+        return;
     }
-  }, []);
+
+    if (storedRole === "admin") {
+        console.log("✅ Redirecting to Admin Panel...");
+        window.location.href = "https://food-delivery-admin-6kig.onrender.com";
+    } else {
+        console.log("✅ Redirecting to Frontend...");
+        window.location.href = "https://food-delivery-frontend-ed5x.onrender.com";
+    }
+}, []);
+
 
   return (
     <div>

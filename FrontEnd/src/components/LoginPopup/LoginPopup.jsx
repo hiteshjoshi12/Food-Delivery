@@ -18,9 +18,40 @@ const LoginPopup = ({ setShowLogin }) => {
     setData((prevData) => ({ ...prevData, [name]: value }));
   };
 
+  // const onLogin = async (event) => {
+  //   event.preventDefault();
+  //   const endpoint = "/api/user/login";
+  //   const newUrl = `${url}${endpoint}`;
+  
+  //   try {
+  //     const response = await axios.post(newUrl, data);
+  //     if (response.data.success) {
+  //       localStorage.setItem("token", response.data.token);
+  //       localStorage.setItem("userId", response.data.userId);
+  //       localStorage.setItem("role", response.data.role); // ✅ Store role
+  
+  //       setToken(response.data.token);
+  //       setUserId(response.data.userId);
+  //       setShowLogin(false);
+  
+  //       // ✅ Redirect Admin to Admin Panel
+  //       if (response.data.role === "admin") {
+  //         window.location.href = "https://food-delivery-admin-6kig.onrender.com";
+  //       } else {
+  //         window.location.reload();
+  //       }
+  //     } else {
+  //       toast.error(response.data.message);
+  //     }
+  //   } catch (error) {
+  //     console.error("❌ Error during login:", error);
+  //     toast.error("An error occurred. Please try again later.");
+  //   }
+  // };
+  
   const onLogin = async (event) => {
     event.preventDefault();
-    const endpoint = "/api/user/login";
+    const endpoint = currentState === "Login" ? "/api/user/login" : "/api/user/register";
     const newUrl = `${url}${endpoint}`;
   
     try {
@@ -33,22 +64,22 @@ const LoginPopup = ({ setShowLogin }) => {
         setToken(response.data.token);
         setUserId(response.data.userId);
         setShowLogin(false);
-  
-        // ✅ Redirect Admin to Admin Panel
+        
+        // ✅ Redirect based on role
         if (response.data.role === "admin") {
           window.location.href = "https://food-delivery-admin-6kig.onrender.com";
         } else {
-          window.location.reload();
+          window.location.href = "https://food-delivery-frontend-ed5x.onrender.com";
         }
+  
       } else {
         toast.error(response.data.message);
       }
     } catch (error) {
-      console.error("❌ Error during login:", error);
+      console.error("An error occurred during login:", error);
       toast.error("An error occurred. Please try again later.");
     }
   };
-  
   
 
   return (
