@@ -5,9 +5,9 @@ import validator from "validator";
 
 const createToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET);
-  };
+};
 
-//login user
+// Login User
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -23,50 +23,51 @@ const loginUser = async (req, res) => {
     }
 
     const token = createToken(user._id);
-    res.json({ success: true, token, userId: user._id });  // ✅ Include userId in response
+    res.json({ success: true, token, userId: user._id });  
   } catch (error) {
     console.log(error);
     res.json({ success: false, message: "Error" });
   }
 };
 
-
-//Register user
+// Register User
 const registerUser = async (req, res) => {
   const { name, password, email } = req.body;
   try {
-    //checking if user is already exist
+    // Checking if user already exists
     const exists = await userModel.findOne({ email });
     if (exists) {
       return res.json({ success: false, message: "User Already Exists." });
     }
 
-    //validating email format and strong password
-    if (!validator.isEmail) {
-      return res.json({ success: false, message: "Please enter valid email." });
+    // Validating email format
+    if (!validator.isEmail(email)) {
+      return res.json({ success: false, message: "Please enter a valid email." });
     }
 
+    // Validating password strength
     if (password.length < 8) {
       return res.json({
         success: false,
-        message: "Please enter password greater than 8.",
+        message: "Password must be at least 8 characters long.",
       });
     }
 
-    //hasing the password
+    // Hashing the password
     const salt = await bcrypt.genSalt(10);
-    const hassedPassword = await bcrypt.hash(password, salt);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
     const newUser = new userModel({
       name: name,
       email: email,
-      password: hassedPassword,
+      password: hashedPassword,
     });
 
     const user = await newUser.save();
     const token = createToken(user._id);
-    res.json({ success: true, token });
+    res.json({ success: true, token, userId: user._id });  
   } catch (error) {
+    console.log(error);
     res.json({ success: false, message: "ERROR" });
   }
 };
