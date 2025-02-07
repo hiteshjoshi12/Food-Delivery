@@ -20,7 +20,8 @@ const LoginPopup = ({ setShowLogin }) => {
 
   const onLogin = async (event) => {
     event.preventDefault();
-    let newUrl = url + "/api/user/login";
+    const endpoint = currentState === 'Login' ? '/api/user/login' : '/api/user/register';
+    const newUrl = `${url}${endpoint}`;
   
     try {
       const response = await axios.post(newUrl, data);
