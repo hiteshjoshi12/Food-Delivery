@@ -8,6 +8,8 @@ const StoreContextProvider = (props) => {
   const url= "http://localhost:4000"
   const [token, setToken] = useState("");
   const [food_list,setFoodList] = useState([]);
+  const [userId, setUserId] = useState(localStorage.getItem("userId") || "");
+
 
   const addToCart = async (itemid) => {
     if (!cartItems[itemid]) {
@@ -64,17 +66,22 @@ const StoreContextProvider = (props) => {
     setCartItem(response.data.cartData);
   }
 
-  useEffect (()=>{
-    
-    async function laodData(){
-      await fetchFoodList()
-      if(localStorage.getItem("token")){
-        setToken(localStorage.getItem("token"))
-        await loadCartData(localStorage.getItem("token"))
-      }
+  useEffect(() => {
+    async function loadData() {
+        await fetchFoodList();
+        const storedToken = localStorage.getItem("token");
+        const storedUserId = localStorage.getItem("userId");
+
+        if (storedToken) {
+            setToken(storedToken);
+            setUserId(storedUserId);  // ✅ Update userId when token exists
+            await loadCartData(storedToken);
+        }
     }
-    laodData();
-  },[])
+    loadData();
+}, [token]);  // ✅ Re-run effect if `token` changes
+
+  
 
   const ContextValue = {
     food_list,
@@ -85,8 +92,10 @@ const StoreContextProvider = (props) => {
     getTotalCartAmount,
     url,
     token,
-    setToken
+    setToken,
+    userId,  
   };
+  
   return (
     <StoreContext.Provider value={ContextValue}>
       {props.children}

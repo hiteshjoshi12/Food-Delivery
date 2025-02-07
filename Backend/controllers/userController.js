@@ -16,20 +16,20 @@ const loginUser = async (req, res) => {
     if (!user) {
       return res.json({ success: false, message: "User Does Not Exist." });
     }
+
     const isMatch = await bcrypt.compare(password, user.password);
-    
     if (!isMatch) {
       return res.json({ success: false, message: "Invalid credentials" });
     }
 
     const token = createToken(user._id);
-    res.json({ success: true, token });
+    res.json({ success: true, token, userId: user._id });  // ✅ Include userId in response
   } catch (error) {
     console.log(error);
-    
     res.json({ success: false, message: "Error" });
   }
 };
+
 
 //Register user
 const registerUser = async (req, res) => {

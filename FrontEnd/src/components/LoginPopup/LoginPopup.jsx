@@ -19,19 +19,17 @@ const LoginPopup = ({ setShowLogin }) => {
 
   const onLogin = async (event) => {
     event.preventDefault();
-    let newUrl =url;
-    if(currentState === "Login"){
-      newUrl+="/api/user/login"
-    }else{
-      newUrl +="/api/user/register"
-    }
-
+    let newUrl = url + "/api/user/login";
+  
     try {
       const response = await axios.post(newUrl, data);
       if (response.data.success) {
-        setToken(response.data.token);
         localStorage.setItem("token", response.data.token);
+        localStorage.setItem("userId", response.data.userId);  // ✅ Store userId
+  
+        setToken(response.data.token);
         setShowLogin(false);
+        window.location.reload();  // ✅ Reload to update StoreContext
       } else {
         alert(response.data.message);
       }
@@ -40,6 +38,7 @@ const LoginPopup = ({ setShowLogin }) => {
       alert("An error occurred. Please try again later.");
     }
   };
+  
 
   return (
     <div className="fixed inset-0 z-10 bg-black/50 flex items-center justify-center">
