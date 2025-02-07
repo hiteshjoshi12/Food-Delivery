@@ -20,27 +20,35 @@ const LoginPopup = ({ setShowLogin }) => {
 
   const onLogin = async (event) => {
     event.preventDefault();
-    const endpoint = currentState === 'Login' ? '/api/user/login' : '/api/user/register';
+    const endpoint = "/api/user/login";
     const newUrl = `${url}${endpoint}`;
   
     try {
       const response = await axios.post(newUrl, data);
       if (response.data.success) {
         localStorage.setItem("token", response.data.token);
-        localStorage.setItem("userId", response.data.userId);  // ✅ Store userId
+        localStorage.setItem("userId", response.data.userId);
+        localStorage.setItem("role", response.data.role); // ✅ Store role
   
         setToken(response.data.token);
-        setUserId(localStorage.setItem("userId", response.data.userId));
+        setUserId(response.data.userId);
         setShowLogin(false);
-        window.location.reload();  // ✅ Reload to update StoreContext
+  
+        // ✅ Redirect Admin to Admin Panel
+        if (response.data.role === "admin") {
+          window.location.href = "https://food-delivery-admin-6kig.onrender.com";
+        } else {
+          window.location.reload();
+        }
       } else {
         toast.error(response.data.message);
       }
     } catch (error) {
-      console.error("An error occurred during login:", error);
+      console.error("❌ Error during login:", error);
       toast.error("An error occurred. Please try again later.");
     }
   };
+  
   
 
   return (

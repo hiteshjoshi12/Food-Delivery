@@ -3,14 +3,29 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import validator from "validator";
 
-const createToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET);
+
+const createToken = (id, role) => {
+  return jwt.sign({ id, role }, process.env.JWT_SECRET, { expiresIn: "7d" });
 };
 
 // Login User
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
+
   try {
+    // ✅ Check for hardcoded admin credentials
+    if (email === "admin@gmail.com" && password === "admin123") {
+      const token = createToken("admin", "admin");
+
+      return res.json({
+        success: true,
+        token,
+        userId: "admin",
+        role: "admin",
+      });
+    }
+
+    // ✅ Check for normal user
     const user = await userModel.findOne({ email });
 
     if (!user) {
@@ -22,8 +37,15 @@ const loginUser = async (req, res) => {
       return res.json({ success: false, message: "Invalid credentials" });
     }
 
-    const token = createToken(user._id);
-    res.json({ success: true, token, userId: user._id });  
+    // ✅ Generate token for normal user
+    const token = createToken(user._id, "user");
+
+    res.json({
+      success: true,
+      token,
+      userId: user._id,
+      role: "user", // ✅ Send "user" role
+    });
   } catch (error) {
     console.log(error);
     res.json({ success: false, message: "Error" });
