@@ -9,8 +9,6 @@ import { ToastContainer } from "react-toastify";
 
 const App = () => {
   const url = "https://food-delivery-ekul.onrender.com";
-  const navigate = useNavigate();
-
   useEffect(() => {
     // ✅ Ensure localStorage has the latest values
     const storedToken = localStorage.getItem("token");

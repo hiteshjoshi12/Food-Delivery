@@ -304,7 +304,7 @@ const PlaceOrder = () => {
         <div className="text-gray-600">
           <div className="flex justify-between">
             <p>Subtotal</p>
-            <p>₹{costAfterPromo}</p>
+            <p>₹{getTotalCartAmount()}</p>
           </div>
           <hr className="my-2" />
           <div className="flex justify-between">
@@ -323,11 +323,7 @@ const PlaceOrder = () => {
             )}
           <div className="flex justify-between text-gray-800 font-bold">
             <p>Total</p>
-            <b>
-              {getTotalCartAmount() === 0
-                ? "₹0"
-                : `₹${getTotalCartAmount() + 2}`}
-            </b>
+            <b>₹{costAfterPromo !== null ? costAfterPromo : getTotalCartAmount() + 149}</b>
           </div>
         </div>
 
