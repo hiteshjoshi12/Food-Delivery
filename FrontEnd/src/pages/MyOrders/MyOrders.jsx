@@ -11,7 +11,7 @@ const MyOrders = () => {
     try {
       const response = await axios.post(
         `${url}/api/order/userorders`,
-        { userId }, // ✅ Sending userId in the request body
+        { userId }, 
         {
           headers: {
             "Content-Type": "application/json",
@@ -21,13 +21,8 @@ const MyOrders = () => {
       );
 
       setData(response.data.data);
-      console.log(response.data.data);
     } catch (error) {
-      console.error(
-        "❌ Error fetching orders:",
-        error.response?.data || error.message
-      );
-    }
+      
   };
 
   useEffect(() => {

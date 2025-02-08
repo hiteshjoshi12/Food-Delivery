@@ -26,10 +26,10 @@ const loginUser = async (req, res) => {
     const token = createToken(user._id);
     const role = email === "admin@gmail.com" && password === "admin123" ? "admin" : "user";
 
-    res.json({ success: true, token, role, userId: user._id }); // ✅ Send role in response
+    res.json({ success: true, token, role, userId: user._id });
 
   } catch (error) {
-    console.log(error);
+ 
     res.json({ success: false, message: "Error" });
   }
 };
@@ -72,7 +72,7 @@ const registerUser = async (req, res) => {
     const token = createToken(user._id);
     res.json({ success: true, token, userId: user._id });  
   } catch (error) {
-    console.log(error);
+ 
     res.json({ success: false, message: "ERROR" });
   }
 };

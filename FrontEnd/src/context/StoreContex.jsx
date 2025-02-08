@@ -75,12 +75,12 @@ const StoreContextProvider = (props) => {
 
         if (storedToken) {
             setToken(storedToken);
-            setUserId(storedUserId);  // ✅ Update userId when token exists
+            setUserId(storedUserId); 
             await loadCartData(storedToken);
         }
     }
     loadData();
-}, [token]);  // ✅ Re-run effect if `token` changes
+}, [token]);  
 
   
 

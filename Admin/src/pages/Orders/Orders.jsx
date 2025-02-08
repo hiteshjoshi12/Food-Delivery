@@ -11,12 +11,10 @@ const Orders = ({url}) => {
       const response = await axios.get(url + "/api/order/list");
       if (response.data.success) {
         setOrders(response.data.data);
-        console.log(response.data.data);
       } else {
         toast.error("Error fetching orders");
       }
     } catch (error) {
-      console.error("❌ Fetch Error:", error);
       toast.error("Server error while fetching orders");
     }
   };
@@ -33,7 +31,6 @@ const Orders = ({url}) => {
         toast.error("Failed to update status");
       }
     } catch (error) {
-      console.error("❌ Status Update Error:", error);
       toast.error("Error updating order status");
     }
   };

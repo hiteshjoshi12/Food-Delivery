@@ -8,7 +8,6 @@ const PlaceOrder = () => {
   const { getTotalCartAmount, cartItems, userId, url, token, food_list,costAfterPromo } =
     useContext(StoreContext);
   const [loading, setLoading] = useState(false);
-  console.log("🔹 User ID Before Order:", userId);
   const [data, setData] = useState({
     firstName: "",
     lastName: "",
@@ -40,8 +39,6 @@ const PlaceOrder = () => {
   };
 
   const handlePayment = async () => {
-    console.log("🔹 User ID Before Order:", userId);
-
     if (
       data.firstName == "" &&
       data.lastName == "" &&
@@ -86,8 +83,6 @@ const PlaceOrder = () => {
         };
       });
 
-    console.log("🔹 Formatted Cart Items:", formattedCartItems);
-
     if (formattedCartItems.length === 0) {
       toast.error("Your cart is empty!");
       setLoading(false);
@@ -103,7 +98,7 @@ const PlaceOrder = () => {
         address: data,
       };
 
-      console.log("Sending Order Request:", requestData);
+
 
       const orderResponse = await axios.post(
         `${url}/api/order/placeOrder`,
@@ -112,8 +107,6 @@ const PlaceOrder = () => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-
-      console.log("✅ Order Response:", orderResponse.data);
 
       if (!orderResponse.data.success) {
         throw new Error(orderResponse.data.message || "Order creation failed!");
@@ -126,15 +119,15 @@ const PlaceOrder = () => {
           amount: costAfterPromo !== null ? costAfterPromo : getTotalCartAmount() + 149,
           address: data,
         },
-        { headers: { Authorization: `Bearer ${token}` } } // ✅ Ensure token is passed
+        { headers: { Authorization: `Bearer ${token}` } } 
       );
 
       if (!paymentInitResponse.data.success) {
         throw new Error(paymentInitResponse.data.message);
       }
 
-      const razorpayOrderId = paymentInitResponse.data.orderId; // ✅ Ensure correct order ID
-      const totalAmount = paymentInitResponse.data.amount * 100; // ✅ Convert to paise
+      const razorpayOrderId = paymentInitResponse.data.orderId; 
+      const totalAmount = paymentInitResponse.data.amount * 100; 
 
       // Step 3: Open Razorpay Checkout
       const options = {
@@ -146,24 +139,14 @@ const PlaceOrder = () => {
         order_id: razorpayOrderId,
         handler: async function (paymentResponse) {
           try {
-            console.log("🔹 Sending Verify Order Request:", {
-              orderId: razorpayOrderId,
-              payment_id: paymentResponse.razorpay_payment_id,
-              razorpay_signature: paymentResponse.razorpay_signature,
-              userId, // ✅ Include userId
-              items: formattedCartItems, // ✅ Include items
-              amount: getTotalCartAmount(), // ✅ Include amount
-              address: data, // ✅ Include address
-            });
-
             const verifyRes = await axios.post(`${url}/api/order/verifyOrder`, {
               orderId: razorpayOrderId,
               payment_id: paymentResponse.razorpay_payment_id,
               razorpay_signature: paymentResponse.razorpay_signature,
-              userId, // ✅ Ensure this is sent
-              items: formattedCartItems, // ✅ Include items array
-              amount: getTotalCartAmount(), // ✅ Include total amount
-              address: data, // ✅ Include address details
+              userId, 
+              items: formattedCartItems, 
+              amount: getTotalCartAmount(), 
+              address: data, 
             });
 
             if (verifyRes.data.success) {
@@ -173,7 +156,6 @@ const PlaceOrder = () => {
               toast.error("Payment verification failed!");
             }
           } catch (error) {
-            console.error("❌ Payment Verification Error:", error);
             toast.error("Payment verification failed!");
           }
         },
@@ -188,7 +170,6 @@ const PlaceOrder = () => {
       const razorpay = new window.Razorpay(options);
       razorpay.open();
     } catch (error) {
-      console.error("❌ Payment Error:", error.response?.data || error.message);
       toast.error(error.message || "Payment failed!");
     } finally {
       setLoading(false);

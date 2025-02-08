@@ -11,8 +11,6 @@ const razorpay = new Razorpay({
 // Place Order API
 const placeOrder = async (req, res) => {
   try {
-    console.log("🔹 Incoming Order Request:", req.body);
-
     if (!req.body.items || req.body.items.length === 0) {
       return res
         .status(400)
@@ -27,18 +25,15 @@ const placeOrder = async (req, res) => {
     };
 
     const razorpayOrder = await razorpay.orders.create(options);
-    console.log("✅ Razorpay Order Created:", razorpayOrder);
-
     res.json({
       success: true,
       message: "Payment initiation successful",
-      orderId: razorpayOrder.id, // Send Razorpay Order ID
+      orderId: razorpayOrder.id, 
       amount: options.amount,
       currency: options.currency,
       key_id: process.env.RAZORPAY_KEY_ID,
     });
   } catch (error) {
-    console.error("❌ Error in placeOrder:", error);
     res
       .status(500)
       .json({ success: false, message: "Order placement failed." });
@@ -48,8 +43,6 @@ const placeOrder = async (req, res) => {
 // Generate Razorpay Order
 const createRazorpayOrder = async (req, res) => {
   try {
-    console.log("🔹 Creating Razorpay Order:", req.body);
-
     const { orderId } = req.body;
     const order = await orderModel.findById(orderId);
 
@@ -79,7 +72,6 @@ const createRazorpayOrder = async (req, res) => {
       key_id: process.env.RAZORPAY_KEY_ID,
     });
   } catch (error) {
-    console.error("❌ Error creating Razorpay order:", error);
     res
       .status(500)
       .json({ success: false, message: "Payment initialization failed." });
@@ -89,8 +81,6 @@ const createRazorpayOrder = async (req, res) => {
 // Verify Order API
 const verifyOrder = async (req, res) => {
   try {
-    console.log("🔹 Verifying Payment:", req.body);
-
     const {
       orderId,
       payment_id,
@@ -109,7 +99,6 @@ const verifyOrder = async (req, res) => {
       !amount ||
       !address
     ) {
-      console.log("❌ Missing required fields in verifyOrder:", req.body);
       return res
         .status(400)
         .json({ success: false, message: "Invalid payment data." });
@@ -122,13 +111,12 @@ const verifyOrder = async (req, res) => {
       .digest("hex");
 
     if (expectedSignature !== razorpay_signature) {
-      console.log("❌ Signature Mismatch!");
       return res
         .status(400)
         .json({ success: false, message: "Invalid Razorpay signature." });
     }
 
-    // ✅ Save order in the database only after successful payment
+    // Save order in the database only after successful payment
     const newOrder = new orderModel({
       userId,
       items,
@@ -139,11 +127,8 @@ const verifyOrder = async (req, res) => {
     });
 
     await newOrder.save();
-    console.log("✅ Order Saved:", newOrder);
-
     res.json({ success: true, message: "Payment verified. Order saved." });
   } catch (error) {
-    console.error("❌ Error in verifyOrder:", error);
     res
       .status(500)
       .json({ success: false, message: "Payment verification failed." });
@@ -154,7 +139,6 @@ const verifyOrder = async (req, res) => {
 const userOrders = async (req, res) => {
   try {
     const userId = req.userId || req.body.userId; // Extract from middleware or request body
-    console.log(userId);
     if (!userId) {
       return res
         .status(400)
@@ -165,7 +149,6 @@ const userOrders = async (req, res) => {
 
     res.json({ success: true, data: orders });
   } catch (error) {
-    console.error("❌ Error fetching user orders:", error);
     res
       .status(500)
       .json({ success: false, message: "Error fetching user orders." });
@@ -178,7 +161,6 @@ const listOrders = async (req, res) => {
     const orders = await orderModel.find({});
     res.json({ success: true, data: orders });
   } catch (error) {
-    console.error("❌ Error fetching orders:", error);
     res.status(500).json({ success: false, message: "Error fetching orders." });
   }
 };
@@ -191,7 +173,6 @@ const updateStatus = async (req, res) => {
     });
     res.json({ success: true, message: "Order status updated." });
   } catch (error) {
-    console.error("❌ Error updating status:", error);
     res.status(500).json({ success: false, message: "Error updating status." });
   }
 };

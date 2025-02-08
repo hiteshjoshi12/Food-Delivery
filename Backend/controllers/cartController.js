@@ -3,8 +3,6 @@ import userModel from "../models/userModel.js"
 //add item to the user cart
 const addToCart = async (req, res) => {
     try {
-        console.log("Received Data:", req.body); // Debugging request data
-
         let { userId, itemId } = req.body;
 
         if (!userId || !itemId) {

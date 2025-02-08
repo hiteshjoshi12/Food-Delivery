@@ -9,9 +9,7 @@ const Cart = () => {
 
 
   const handleApplyPromo = () => {
-    const promoValue = promocode.current.value.trim();
-    console.log("Entered Promo Code:", promoValue);
-    
+    const promoValue = promocode.current.value.trim();    
     if (promoValue === "GOODDAY75") {
       const discountedAmount = Math.max(getTotalCartAmount()+149 - 75, 0); // Ensure total is not negative
       setCostAfterPromo(discountedAmount);
