@@ -123,7 +123,7 @@ const PlaceOrder = () => {
         {
           userId,
           items: formattedCartItems,
-          amount: getTotalCartAmount(),
+          amount: costAfterPromo !== null ? costAfterPromo : getTotalCartAmount() + 149,
           address: data,
         },
         { headers: { Authorization: `Bearer ${token}` } } // ✅ Ensure token is passed
