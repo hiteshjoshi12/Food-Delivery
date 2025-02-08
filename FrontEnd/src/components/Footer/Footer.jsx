@@ -36,7 +36,7 @@ const Footer = () => {
           <h2 className="text-white font-bold text-2xl">GET IN TOUCH</h2>
           <ul className="text-sm md:text-base">
             <li className="my-1 cursor-pointer hover:text-white transition">+91 9650122063</li>
-            <li className="my-1 cursor-pointer hover:text-white transition">contact@tomato.com</li>
+            <li className="my-1 cursor-pointer hover:text-white transition">contact@yumrun.com</li>
           </ul>
         </div>
       </div>
@@ -45,7 +45,7 @@ const Footer = () => {
       <hr className="w-full h-[2px] bg-gray-500 border-none" />
 
       {/* Copyright */}
-      <p className="text-sm text-center">© 2025 TOMATO. All rights reserved.</p>
+      <p className="text-sm text-center">© 2025 YUMRUN. All rights reserved.</p>
     </footer>
   );
 };

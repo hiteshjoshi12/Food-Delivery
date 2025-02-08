@@ -4,7 +4,7 @@ const AppDownload = () => {
   return (
     <div className="mx-auto mt-24 text-center text-[max(3vw,20px)] font-medium" id="app-download">
       <p>
-        For Better Experience Download <br /> Tomato App
+        For Better Experience Download <br /> YUMRUN App
       </p>
       <div className="flex justify-center gap-[max(2vw,10px)] mt-10">
         <img
