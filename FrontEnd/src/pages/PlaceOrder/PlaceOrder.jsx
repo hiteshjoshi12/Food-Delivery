@@ -99,7 +99,7 @@ const PlaceOrder = () => {
       const requestData = {
         userId,
         items: formattedCartItems,
-        amount: costAfterPromo,
+        amount: costAfterPromo ?? getTotalCartAmount(),
         address: data,
       };
 
