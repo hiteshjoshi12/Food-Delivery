@@ -73,16 +73,16 @@ const PlaceOrder = () => {
       return;
     }
 
-    // ✅ Ensure cartItems are correctly formatted with price & name
+    //Ensure cartItems are correctly formatted with price & name
     const formattedCartItems = Object.entries(cartItems)
       .filter(([id, quantity]) => quantity > 0)
       .map(([id, quantity]) => {
-        const item = food_list.find((food) => food._id === id); // Ensure item data is retrieved
+        const item = food_list.find((food) => food._id === id); 
         return {
           itemId: id,
           quantity,
-          price: item?.price || 0, // Ensure price is included
-          name: item?.name || "Unknown Item", // Include item name
+          price: item?.price || 0, 
+          name: item?.name || "Unknown Item", 
         };
       });
 
@@ -99,11 +99,11 @@ const PlaceOrder = () => {
       const requestData = {
         userId,
         items: formattedCartItems,
-        amount: costAfterPromo ?? getTotalCartAmount(),
+        amount:costAfterPromo !== null ? costAfterPromo : getTotalCartAmount() + 149,
         address: data,
       };
 
-      console.log("🔹 Sending Order Request:", requestData);
+      console.log("Sending Order Request:", requestData);
 
       const orderResponse = await axios.post(
         `${url}/api/order/placeOrder`,
