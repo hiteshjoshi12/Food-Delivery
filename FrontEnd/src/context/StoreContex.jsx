@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import axios from "axios";
 import { createContext, useEffect, useState } from "react";
+import { getItemWithExpiry } from "../util/getItemWithExpiry";
 export const StoreContext = createContext(null);
 
 const StoreContextProvider = (props) => {
@@ -8,7 +9,7 @@ const StoreContextProvider = (props) => {
   const url= "https://food-delivery-ekul.onrender.com"
   const [token, setToken] = useState("");
   const [food_list,setFoodList] = useState([]);
-  const [userId, setUserId] = useState(localStorage.getItem("userId") || "");
+  const [userId, setUserId] = useState(getItemWithExpiry("userId") || "");
   const [costAfterPromo, setCostAfterPromo] = useState(null);
 
 
@@ -21,7 +22,7 @@ const StoreContextProvider = (props) => {
   
     if (token) {
       try {
-        const userId = localStorage.getItem("userId");
+        const userId = getItemWithExpiry("userId");
         const response = await axios.post(
           url + "/api/cart/add",
           { userId, itemId: itemid },  
@@ -70,8 +71,8 @@ const StoreContextProvider = (props) => {
   useEffect(() => {
     async function loadData() {
         await fetchFoodList();
-        const storedToken = localStorage.getItem("token");
-        const storedUserId = localStorage.getItem("userId");
+        const storedToken = getItemWithExpiry("token");
+        const storedUserId = getItemWithExpiry("userId");
 
         if (storedToken) {
             setToken(storedToken);

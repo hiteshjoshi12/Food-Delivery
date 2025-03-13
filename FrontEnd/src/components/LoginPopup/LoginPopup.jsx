@@ -17,6 +17,7 @@ const LoginPopup = ({ setShowLogin }) => {
     const { name, value } = event.target;
     setData((prevData) => ({ ...prevData, [name]: value }));
   }; 
+ 
   const onLogin = async (event) => {
     event.preventDefault();
     const endpoint = currentState === "Login" ? "/api/user/login" : "/api/user/register";
@@ -25,20 +26,21 @@ const LoginPopup = ({ setShowLogin }) => {
     try {
       const response = await axios.post(newUrl, data);
       if (response.data.success) {
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("userId", response.data.userId);
-        localStorage.setItem("role", response.data.role); 
+        const expiryTime = Date.now() + 20 * 60 * 1000; // 20 minutes from now
+  
+        localStorage.setItem("token", JSON.stringify({ value: response.data.token, expiry: expiryTime }));
+        localStorage.setItem("userId", JSON.stringify({ value: response.data.userId, expiry: expiryTime }));
+        localStorage.setItem("role", JSON.stringify({ value: response.data.role, expiry: expiryTime }));
   
         setToken(response.data.token);
         setUserId(response.data.userId);
         setShowLogin(false);
-        
+  
         if (response.data.role === "admin") {
           window.location.href = "https://food-delivery-admin-6kig.onrender.com";
         } else {
           window.location.href = "https://food-delivery-frontend-ed5x.onrender.com";
         }
-  
       } else {
         toast.error(response.data.message);
       }
@@ -46,6 +48,7 @@ const LoginPopup = ({ setShowLogin }) => {
       toast.error("An error occurred. Please try again later.");
     }
   };
+  
   
 
   return (

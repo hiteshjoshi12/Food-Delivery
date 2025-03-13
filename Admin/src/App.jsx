@@ -6,12 +6,13 @@ import Add from "./pages/Add/Add";
 import List from "./pages/List/List";
 import Orders from "./pages/Orders/Orders";
 import {ToastContainer, toast } from "react-toastify";
+import { getItemWithExpiry } from "./util/getItemWithExpiry";
 
 const App = () => {
   const url = "https://food-delivery-ekul.onrender.com";
   useEffect(() => {
-    const storedToken = localStorage.getItem("token");
-    const storedRole = localStorage.getItem("role")?.toLowerCase();
+    const storedToken = getItemWithExpiry("token");
+    const storedRole = getItemWithExpiry("role")?.toLowerCase();
 
 
     if (!storedToken) {
