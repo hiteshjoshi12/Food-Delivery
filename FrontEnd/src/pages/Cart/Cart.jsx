@@ -40,7 +40,7 @@ const Cart = () => {
                 className="grid grid-cols-6 items-center text-black gap-2 my-3 p-2 border-b border-gray-300 text-xs md:text-sm"
               >
                 {/* Image */}
-                <img src={url + "/images/" + item.image} alt={item.name} className="w-12 md:w-16 rounded-md" />
+                <img src={item.image} alt={item.name} className="w-12 md:w-16 rounded-md" />
 
                 {/* Title */}
                 <p className="truncate">{item.name}</p>
