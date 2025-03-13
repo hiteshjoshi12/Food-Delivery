@@ -13,9 +13,12 @@ const Header = () => {
           Choose from a diverse menu featuring a delectable array of dishes
           crafted with the finest ingredients and culinary expertise.
         </p>
+        <a href="#explore-menu" >
         <button className="border-none font-medium py-3 px-6 md:p-5 w-[max(140px,40%)] md:w-[160px] bg-white text-[#747474] text-[max(3.5vw,13px)] md:text-[max(1vw,13px)] rounded-full shadow-md hover:bg-gray-200 transition">
           View Menu
+        
         </button>
+        </a>
       </div>
     </div>
   );
