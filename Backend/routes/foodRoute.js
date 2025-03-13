@@ -10,7 +10,7 @@ const foodRouter = express.Router();
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: "food-delivery", // Change this to your desired folder name
+    folder: "food-delivery", 
     allowed_formats: ["jpg", "png", "jpeg"],
   },
 });
