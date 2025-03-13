@@ -12,7 +12,7 @@ const FoodItem = ({ id, name, price, description, image }) => {
       <div className="relative">
         <img
           className="w-full rounded-tl-2xl rounded-tr-2xl"
-          src={url+"/images/"+image}
+          src={image}
           alt=""
         />
         {!cartItems[id] ? (
