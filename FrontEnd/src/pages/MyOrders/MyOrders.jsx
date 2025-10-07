@@ -37,7 +37,7 @@ const MyOrders = () => {
   }, [token]);
 
   return (
-    <div className="my-12 px-4 md:px-8">
+    <div className="my-12 px-4 md:px-8 pt-8">
       <h2 className="text-xl md:text-2xl font-semibold">My Orders</h2>
 
       <div className="flex flex-col gap-5 mt-6">

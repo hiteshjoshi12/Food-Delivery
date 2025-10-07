@@ -40,7 +40,7 @@ const Orders = ({url}) => {
   }, []);
 
   return (
-    <div className="p-6">
+    <div className="p-8">
       <h3 className="text-xl md:text-2xl font-semibold mb-6">Order Page</h3>
       
       <div className="space-y-6">
@@ -61,16 +61,16 @@ const Orders = ({url}) => {
                     : `${item.name} x ${item.quantity}, `
                 )}
               </p>
-              <p className="mt-3 mb-1 font-semibold">{`${order.address.firstName} ${order.address.lastName}`}</p>
+              <p className="mt-3 mb-1 font-semibold">{`${order?.address?.firstName} ${order?.address?.lastName}`}</p>
               <div className="text-gray-500 mb-2">
-                <p>{order.address.street},</p>
-                <p>{`${order.address.city}, ${order.address.state}, ${order.address.country}, ${order.address.zipcode}`}</p>
+                <p>{order?.address?.street},</p>
+                <p>{`${order?.address?.city}, ${order?.address?.state}, ${order?.address?.country}, ${order?.address?.zipcode}`}</p>
               </div>
-              <p className="text-gray-700">{order.address.phone}</p>
+              <p className="text-gray-700">{order?.address?.phone}</p>
             </div>
 
             {/* Items Count */}
-            <p className="text-center sm:text-left">Items: {order.items.length}</p>
+            <p className="text-center sm:text-left">Items: {order?.items?.length}</p>
 
             {/* Order Amount */}
             <p className="font-semibold text-center sm:text-left">₹{order.amount}</p>

@@ -62,7 +62,7 @@ const List = ({url}) => {
             className="grid grid-cols-2 md:grid-cols-5 items-center gap-2 p-3 text-sm border-b"
           >
             {/* Image */}
-            <img src={`${url}/images/${item.imageUrl}`} alt={item.name} className="w-14 mx-auto md:w-12" />
+            <img src={item.imageUrl} alt={item.name} className="w-14 mx-auto md:w-12" />
 
             {/* Name */}
             <p className="text-center md:text-left">{item.name}</p>
