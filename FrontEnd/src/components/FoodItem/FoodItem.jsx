@@ -6,15 +6,15 @@ import { StoreContext } from "../../context/StoreContex";
 
 /* eslint-disable react/prop-types */
 const FoodItem = ({ id, name, price, description, image }) => {
-  const { cartItems, addToCart, removeFromCart,url } = useContext(StoreContext);
+  const { cartItems, addToCart, removeFromCart, url } =
+    useContext(StoreContext);
   return (
     <div className="m-auto w-full rounded-[15px] shadow-2xl transition-[0.3s] [animation:fadeIn_1s_ease-in-out]">
       <div className="relative">
-        <img
-          className="w-full rounded-tl-2xl rounded-tr-2xl"
-          src={image}
-          alt=""
-        />
+        <div className="w-full aspect-[4/3] overflow-hidden rounded-tl-2xl rounded-tr-2xl">
+          <img className="w-full h-full object-cover" src={image} alt={name} />
+        </div>
+
         {!cartItems[id] ? (
           <img
             className="w-9 absolute bottom-4 right-4 cursor-pointer rounded-[50%]"

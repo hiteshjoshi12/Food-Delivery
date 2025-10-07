@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import { menu_list } from "../../assets/frontend_assets/assets";
 const ExploreMenu = ({ category, setCategory }) => {
+  console.log("ExploreMenu category:", category);
   return (
     <div className="flex flex-col gap-5 mt-8" id="explore-menu">
       <h1 className="text-[#262626] font-medium text-3xl">Explore our menu</h1>
